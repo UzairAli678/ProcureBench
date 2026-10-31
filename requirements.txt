@@ -1,0 +1,9 @@
+pandas
+faker
+python-dotenv
+google-genai
+openai
+pytest
+streamlit
+plotly
+
