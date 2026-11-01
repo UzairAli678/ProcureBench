@@ -1,0 +1,720 @@
+[
+  {
+    "case_id": "PROC-001",
+    "title": "Quantity Mismatch",
+    "category": "Quantity Reconciliation",
+    "difficulty": "Medium",
+    "scenario": "Supplier Horizon Components delivered 80 units of Product PRD-101 against an approved purchase order for 100 units. The goods receipt note confirms only 80 units were accepted into the warehouse. The supplier subsequently submitted an invoice requesting payment for the full 100 units.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 1,
+        "supplier_name": "Horizon Components",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK36SCBL0000001123456701"
+      },
+      "purchase_order": {
+        "po_id": 101,
+        "supplier_id": 1,
+        "order_date": "2026-09-01",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-101",
+            "quantity": 100,
+            "unit_price": 500.0,
+            "line_total": 50000.0
+          }
+        ],
+        "total_amount": 50000.0,
+        "approved_by": {
+          "employee_id": 12,
+          "name": "Alexander Wright",
+          "approval_limit": 150000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 201,
+        "po_id": 101,
+        "received_quantity": 80,
+        "receipt_date": "2026-09-08"
+      },
+      "invoice": {
+        "invoice_id": 301,
+        "invoice_number": "INV-2026-101",
+        "supplier_id": 1,
+        "po_id": 101,
+        "invoice_date": "2026-09-10",
+        "invoice_quantity": 100,
+        "amount": 50000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK36SCBL0000001123456701"
+      }
+    },
+    "applicable_policies": [
+      "POL-02-QTY-MATCH",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-QTY-MISMATCH"
+      ],
+      "evidence": [
+        "Purchase order PO-101 ordered 100 units of PRD-101",
+        "Goods receipt GRN-201 confirmed receipt of 80 units",
+        "Invoice INV-2026-101 billed for 100 units (20 units in excess of physical receipt)"
+      ],
+      "reasoning": "The invoiced quantity (100) exceeds the verified received quantity (80). Under ProcureBench Policy 2, invoices cannot exceed cumulative received quantities, and under Policy 10, payment must be held until resolved.",
+      "next_action": "Place payment on hold, notify Horizon Components of the 20-unit variance, and request a revised invoice for 80 units (40,000 PKR) or confirm pending delivery.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-002",
+    "title": "Duplicate Invoice",
+    "category": "Duplicate Prevention",
+    "difficulty": "Low",
+    "scenario": "Apex Logistics submitted invoice INV-2026-882 for 75,000 PKR referencing PO-102. An inspection of accounting records reveals that an identical invoice number (INV-2026-882) from the same supplier was already approved and settled on 2026-08-15.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 2,
+        "supplier_name": "Apex Logistics",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK45MCBL0000002233445501"
+      },
+      "purchase_order": {
+        "po_id": 102,
+        "supplier_id": 2,
+        "order_date": "2026-08-01",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-202",
+            "quantity": 50,
+            "unit_price": 1500.0,
+            "line_total": 75000.0
+          }
+        ],
+        "total_amount": 75000.0,
+        "approved_by": {
+          "employee_id": 3,
+          "name": "Sarah Jenkins",
+          "approval_limit": 75000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 202,
+        "po_id": 102,
+        "received_quantity": 50,
+        "receipt_date": "2026-08-05"
+      },
+      "historical_invoices": [
+        {
+          "invoice_id": 290,
+          "invoice_number": "INV-2026-882",
+          "supplier_id": 2,
+          "po_id": 102,
+          "amount": 75000.0,
+          "currency": "PKR",
+          "status": "PAID",
+          "payment_date": "2026-08-15"
+        }
+      ],
+      "invoice": {
+        "invoice_id": 302,
+        "invoice_number": "INV-2026-882",
+        "supplier_id": 2,
+        "po_id": 102,
+        "invoice_date": "2026-09-12",
+        "invoice_quantity": 50,
+        "amount": 75000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK45MCBL0000002233445501"
+      }
+    },
+    "applicable_policies": [
+      "POL-05-NO-DUPLICATE",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-DUP-INVOICE"
+      ],
+      "evidence": [
+        "Invoice INV-2026-882 was previously submitted by Apex Logistics and marked PAID on 2026-08-15",
+        "Current submission reuses invoice number INV-2026-882 for the same purchase order and amount"
+      ],
+      "reasoning": "The invoice is a duplicate submission of an already paid claim. Policy 5 strictly forbids duplicate invoice numbers from the same supplier.",
+      "next_action": "Hold payment immediately, reject the duplicate claim, and contact Apex Logistics to prevent duplicate payment.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-003",
+    "title": "Inactive Supplier",
+    "category": "Vendor Compliance",
+    "difficulty": "Low",
+    "scenario": "An invoice of 120,000 PKR arrived from Cascade Materials against PO-103. A review of the vendor master profile indicates that Cascade Materials was flagged as INACTIVE following a compliance audit suspension.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 3,
+        "supplier_name": "Cascade Materials",
+        "status": "INACTIVE",
+        "country": "PK",
+        "bank_account": "PK12UBL0000003344556601"
+      },
+      "purchase_order": {
+        "po_id": 103,
+        "supplier_id": 3,
+        "order_date": "2026-08-10",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-303",
+            "quantity": 60,
+            "unit_price": 2000.0,
+            "line_total": 120000.0
+          }
+        ],
+        "total_amount": 120000.0,
+        "approved_by": {
+          "employee_id": 6,
+          "name": "Arthur Pendelton",
+          "approval_limit": 120000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 203,
+        "po_id": 103,
+        "received_quantity": 60,
+        "receipt_date": "2026-08-18"
+      },
+      "invoice": {
+        "invoice_id": 303,
+        "invoice_number": "INV-2026-303",
+        "supplier_id": 3,
+        "po_id": 103,
+        "invoice_date": "2026-09-02",
+        "invoice_quantity": 60,
+        "amount": 120000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK12UBL0000003344556601"
+      }
+    },
+    "applicable_policies": [
+      "POL-01-SUPPLIER-ACTIVE",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-INACTIVE-SUPPLIER"
+      ],
+      "evidence": [
+        "Supplier Cascade Materials (supplier_id 3) has status 'INACTIVE' in vendor records",
+        "Invoice INV-2026-303 claims 120,000 PKR against an inactive vendor account"
+      ],
+      "reasoning": "Policy 1 specifies that only ACTIVE suppliers are eligible for payment disbursements. Payment must be held under Policy 10.",
+      "next_action": "Hold payment and refer file to Vendor Management to determine if supplier compliance suspension can be cleared.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-004",
+    "title": "Missing Purchase Order",
+    "category": "Order Validation",
+    "difficulty": "Low",
+    "scenario": "Titan Industrial Technologies submitted an invoice for 85,000 PKR citing purchase order PO-999. Verification against the enterprise ERP database shows no record of PO-999 having ever been created or authorized.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 4,
+        "supplier_name": "Titan Industrial Technologies",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK78HABB0000004455667701"
+      },
+      "purchase_order": null,
+      "goods_receipt": null,
+      "invoice": {
+        "invoice_id": 304,
+        "invoice_number": "INV-2026-404",
+        "supplier_id": 4,
+        "po_id": 999,
+        "invoice_date": "2026-09-15",
+        "invoice_quantity": 40,
+        "amount": 85000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK78HABB0000004455667701"
+      }
+    },
+    "applicable_policies": [
+      "POL-03-PO-EXISTENCE",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-MISSING-PO"
+      ],
+      "evidence": [
+        "Invoice INV-2026-404 cites purchase order PO-999",
+        "PO-999 does not exist in the enterprise procurement database"
+      ],
+      "reasoning": "An invoice cannot be processed without a legitimate, existing purchase order. Policy 3 requires a valid PO reference before any payment.",
+      "next_action": "Hold payment and request Titan Industrial Technologies to provide a valid, authorized purchase order reference.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-005",
+    "title": "Unauthorized Approval",
+    "category": "Financial Delegation",
+    "difficulty": "Medium",
+    "scenario": "Purchase order PO-105 totaling 180,000 PKR was created and approved by David Patel, a Procurement Officer whose authorized approval limit is strictly capped at 50,000 PKR. An invoice for 180,000 PKR matching the goods receipt was received.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 5,
+        "supplier_name": "Vanguard Manufacturing",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK90ALFH0000005566778801"
+      },
+      "purchase_order": {
+        "po_id": 105,
+        "supplier_id": 5,
+        "order_date": "2026-09-05",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-505",
+            "quantity": 100,
+            "unit_price": 1800.0,
+            "line_total": 180000.0
+          }
+        ],
+        "total_amount": 180000.0,
+        "approved_by": {
+          "employee_id": 4,
+          "name": "David Patel",
+          "role": "Procurement Officer",
+          "approval_limit": 50000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 205,
+        "po_id": 105,
+        "received_quantity": 100,
+        "receipt_date": "2026-09-12"
+      },
+      "invoice": {
+        "invoice_id": 305,
+        "invoice_number": "INV-2026-505",
+        "supplier_id": 5,
+        "po_id": 105,
+        "invoice_date": "2026-09-16",
+        "invoice_quantity": 100,
+        "amount": 180000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK90ALFH0000005566778801"
+      }
+    },
+    "applicable_policies": [
+      "POL-07-APPROVAL-LIMIT",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "ESCALATE",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-UNAUTH-APPROVAL"
+      ],
+      "evidence": [
+        "PO-105 total amount is 180,000 PKR",
+        "Approving employee David Patel has an approval limit of 50,000 PKR",
+        "Order value exceeds approver limit by 130,000 PKR"
+      ],
+      "reasoning": "David Patel exceeded his designated financial authority by approving an order of 180,000 PKR against a 50,000 PKR threshold. Policy 7 requires approval from an authorized delegation level.",
+      "next_action": "Escalate the transaction to a Procurement Director or Administrator with minimum 180,000 PKR signing authority for retroactive sign-off.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-006",
+    "title": "Incorrect Invoice Amount",
+    "category": "Price and Calculation",
+    "difficulty": "Medium",
+    "scenario": "Pinnacle Supplies delivered 50 units of PRD-606 at an agreed PO unit price of 1,200 PKR, yielding an authorized total of 60,000 PKR. The warehouse confirmed receipt of 50 units. The vendor invoice claims 72,000 PKR (effectively 1,440 PKR/unit), exceeding the contracted amount.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 6,
+        "supplier_name": "Pinnacle Supplies",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK33MEZN0000006677889901"
+      },
+      "purchase_order": {
+        "po_id": 106,
+        "supplier_id": 6,
+        "order_date": "2026-09-02",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-606",
+            "quantity": 50,
+            "unit_price": 1200.0,
+            "line_total": 60000.0
+          }
+        ],
+        "total_amount": 60000.0,
+        "approved_by": {
+          "employee_id": 8,
+          "name": "James Wilson",
+          "approval_limit": 80000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 206,
+        "po_id": 106,
+        "received_quantity": 50,
+        "receipt_date": "2026-09-09"
+      },
+      "invoice": {
+        "invoice_id": 306,
+        "invoice_number": "INV-2026-606",
+        "supplier_id": 6,
+        "po_id": 106,
+        "invoice_date": "2026-09-14",
+        "invoice_quantity": 50,
+        "amount": 72000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK33MEZN0000006677889901"
+      }
+    },
+    "applicable_policies": [
+      "POL-06-AMOUNT-CALC",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-AMOUNT-MISMATCH"
+      ],
+      "evidence": [
+        "PO-106 contract price is 1,200 PKR per unit for 50 units (calculated total: 60,000 PKR)",
+        "Goods receipt confirms 50 units received",
+        "Invoice INV-2026-606 charges 72,000 PKR (12,000 PKR pricing variance)"
+      ],
+      "reasoning": "The invoice amount (72,000 PKR) does not match the product of confirmed quantity and contracted unit price (50 * 1,200 = 60,000 PKR). Policy 6 prohibits payment of unauthorized markups.",
+      "next_action": "Hold payment and request Pinnacle Supplies to submit a corrected invoice for 60,000 PKR matching PO rates.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-007",
+    "title": "Partial Goods Receipt",
+    "category": "3-Way Matching",
+    "difficulty": "Medium",
+    "scenario": "Quantum Systems ordered 200 units of PRD-707 at 300 PKR each (60,000 PKR total). Warehouse receipt GRN-207 logged a partial shipment of 120 units, leaving 80 units unfulfilled. The supplier invoiced for the entire order quantity of 200 units at 60,000 PKR.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 7,
+        "supplier_name": "Quantum Systems",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK55BAHL0000007788990001"
+      },
+      "purchase_order": {
+        "po_id": 107,
+        "supplier_id": 7,
+        "order_date": "2026-08-25",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-707",
+            "quantity": 200,
+            "unit_price": 300.0,
+            "line_total": 60000.0
+          }
+        ],
+        "total_amount": 60000.0,
+        "approved_by": {
+          "employee_id": 13,
+          "name": "Grace Kim",
+          "approval_limit": 75000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 207,
+        "po_id": 107,
+        "received_quantity": 120,
+        "receipt_date": "2026-09-04"
+      },
+      "invoice": {
+        "invoice_id": 307,
+        "invoice_number": "INV-2026-707",
+        "supplier_id": 7,
+        "po_id": 107,
+        "invoice_date": "2026-09-06",
+        "invoice_quantity": 200,
+        "amount": 60000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK55BAHL0000007788990001"
+      }
+    },
+    "applicable_policies": [
+      "POL-02-QTY-MATCH",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-PARTIAL-RECEIPT"
+      ],
+      "evidence": [
+        "PO-107 authorized 200 units",
+        "GRN-207 records partial delivery of only 120 units",
+        "Invoice INV-2026-707 bills for full 200 units (60,000 PKR instead of 36,000 PKR supported value)"
+      ],
+      "reasoning": "The goods receipt represents a partial shipment of 120 units, but the supplier billed for the full 200 units. Policy 2 mandates that invoice quantities cannot exceed received goods.",
+      "next_action": "Hold full payment, notify Quantum Systems of partial delivery status, and offer either partial payment of 36,000 PKR or hold pending remainder delivery.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-008",
+    "title": "Bank Detail Mismatch",
+    "category": "Fraud and Compliance",
+    "difficulty": "Medium",
+    "scenario": "Zenith Solutions supplied 80 units of PRD-808 under PO-108 with valid GRN and correct pricing. However, the remittance bank account listed on the invoice (PK98HABB0000009988776602) differs from the verified bank account recorded in the supplier master profile (PK36SCBL0000001123456701).",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 8,
+        "supplier_name": "Zenith Solutions",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK36SCBL0000001123456701"
+      },
+      "purchase_order": {
+        "po_id": 108,
+        "supplier_id": 8,
+        "order_date": "2026-09-01",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-808",
+            "quantity": 80,
+            "unit_price": 600.0,
+            "line_total": 48000.0
+          }
+        ],
+        "total_amount": 48000.0,
+        "approved_by": {
+          "employee_id": 2,
+          "name": "Marcus Chen",
+          "approval_limit": 35000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 208,
+        "po_id": 108,
+        "received_quantity": 80,
+        "receipt_date": "2026-09-07"
+      },
+      "invoice": {
+        "invoice_id": 308,
+        "invoice_number": "INV-2026-808",
+        "supplier_id": 8,
+        "po_id": 108,
+        "invoice_date": "2026-09-11",
+        "invoice_quantity": 80,
+        "amount": 48000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK98HABB0000009988776602"
+      }
+    },
+    "applicable_policies": [
+      "POL-08-BANK-MATCH",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-BANK-MISMATCH"
+      ],
+      "evidence": [
+        "Supplier master profile verified account: PK36SCBL0000001123456701",
+        "Invoice INV-2026-808 remittance bank account: PK98HABB0000009988776602"
+      ],
+      "reasoning": "The remittance bank details on the invoice do not match the verified master supplier profile. Policy 8 strictly forbids disbursement to unverified bank accounts to prevent payment fraud.",
+      "next_action": "Hold payment immediately, quarantine invoice, and initiate verbal callback verification with authorized supplier contacts.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-009",
+    "title": "Currency Mismatch",
+    "category": "Currency Compliance",
+    "difficulty": "Low",
+    "scenario": "Starlight Industries issued purchase order PO-109 contracted and approved in PKR for 250,000 PKR. The incoming vendor invoice was billed in USD ($900.00 USD) without foreign exchange authorization or currency amendment.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 9,
+        "supplier_name": "Starlight Industries",
+        "status": "ACTIVE",
+        "country": "PK",
+        "bank_account": "PK76HBL0000008899001101"
+      },
+      "purchase_order": {
+        "po_id": 109,
+        "supplier_id": 9,
+        "order_date": "2026-08-28",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-909",
+            "quantity": 100,
+            "unit_price": 2500.0,
+            "line_total": 250000.0
+          }
+        ],
+        "total_amount": 250000.0,
+        "approved_by": {
+          "employee_id": 10,
+          "name": "Liam O'Connor",
+          "approval_limit": 200000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 209,
+        "po_id": 109,
+        "received_quantity": 100,
+        "receipt_date": "2026-09-05"
+      },
+      "invoice": {
+        "invoice_id": 309,
+        "invoice_number": "INV-2026-909",
+        "supplier_id": 9,
+        "po_id": 109,
+        "invoice_date": "2026-09-12",
+        "invoice_quantity": 100,
+        "amount": 900.0,
+        "currency": "USD",
+        "remittance_bank_account": "PK76HBL0000008899001101"
+      }
+    },
+    "applicable_policies": [
+      "POL-09-CURRENCY-MATCH",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-CURRENCY-MISMATCH"
+      ],
+      "evidence": [
+        "Purchase order PO-109 contracted currency is PKR (250,000 PKR)",
+        "Invoice INV-2026-909 is billed in USD (900.00 USD)"
+      ],
+      "reasoning": "Invoice currency (USD) does not match the purchase order currency (PKR). Policy 9 requires currency alignment across commercial documents.",
+      "next_action": "Hold payment and request Starlight Industries re-issue the invoice in the contracted currency of PKR.",
+      "payment_allowed": false
+    }
+  },
+  {
+    "case_id": "PROC-010",
+    "title": "Multiple Discrepancies",
+    "category": "Compound Multi-Discrepancy",
+    "difficulty": "High",
+    "scenario": "Beacon Technologies, an INACTIVE supplier, submitted invoice INV-2026-010 against PO-110. The purchase order was for 150 units at 400 PKR (60,000 PKR total), but the warehouse only received 100 units. The invoice claims payment for 150 units at an inflated total of 75,000 PKR.",
+    "transaction_data": {
+      "supplier": {
+        "supplier_id": 10,
+        "supplier_name": "Beacon Technologies",
+        "status": "INACTIVE",
+        "country": "PK",
+        "bank_account": "PK22FAYS0000009900112201"
+      },
+      "purchase_order": {
+        "po_id": 110,
+        "supplier_id": 10,
+        "order_date": "2026-08-20",
+        "currency": "PKR",
+        "status": "APPROVED",
+        "items": [
+          {
+            "product_id": "PRD-010",
+            "quantity": 150,
+            "unit_price": 400.0,
+            "line_total": 60000.0
+          }
+        ],
+        "total_amount": 60000.0,
+        "approved_by": {
+          "employee_id": 5,
+          "name": "Elena Rostova",
+          "approval_limit": 50000.0
+        }
+      },
+      "goods_receipt": {
+        "grn_id": 210,
+        "po_id": 110,
+        "received_quantity": 100,
+        "receipt_date": "2026-08-29"
+      },
+      "invoice": {
+        "invoice_id": 310,
+        "invoice_number": "INV-2026-010",
+        "supplier_id": 10,
+        "po_id": 110,
+        "invoice_date": "2026-09-08",
+        "invoice_quantity": 150,
+        "amount": 75000.0,
+        "currency": "PKR",
+        "remittance_bank_account": "PK22FAYS0000009900112201"
+      }
+    },
+    "applicable_policies": [
+      "POL-01-SUPPLIER-ACTIVE",
+      "POL-02-QTY-MATCH",
+      "POL-06-AMOUNT-CALC",
+      "POL-10-DISCREPANCY-HOLD"
+    ],
+    "expected_answer": {
+      "decision": "HOLD",
+      "risk_level": "HIGH",
+      "discrepancies": [
+        "DISC-INACTIVE-SUPPLIER",
+        "DISC-QTY-MISMATCH",
+        "DISC-AMOUNT-MISMATCH"
+      ],
+      "evidence": [
+        "Supplier Beacon Technologies has status 'INACTIVE' in vendor records",
+        "Goods receipt GRN-210 confirms 100 units received, while invoice bills for 150 units (50-unit excess)",
+        "Invoice amount is 75,000 PKR instead of the contracted 60,000 PKR for 150 units or 40,000 PKR for received 100 units"
+      ],
+      "reasoning": "The transaction violates three distinct business policies: supplier status is INACTIVE (Policy 1), billed quantity exceeds received quantity (Policy 2), and total invoice price contains an uncontracted premium (Policy 6).",
+      "next_action": "Place payment on immediate hold, freeze automated processing for Beacon Technologies, and initiate an investigation with Vendor Management.",
+      "payment_allowed": false
+    }
+  }
+]
+
