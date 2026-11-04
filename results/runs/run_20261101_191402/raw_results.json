@@ -1,0 +1,182 @@
+[
+  {
+    "case_id": "PROC-001",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 3.749,
+    "success": false,
+    "error": "Gemini API error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "case_id": "PROC-002",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": "{\n  \"decision\": \"REJECT\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\n    \"DISC-DUP-INVOICE\"\n  ],\n  \"evidence\": [\n    \"The current invoice (ID 302) from Apex Logistics (ID 2) has invoice number \\\"INV-2026-882\\\" for 75000.0 PKR referencing PO-102.\",\n    \"Historical invoice records show an invoice (ID 290) with the same invoice number \\\"INV-2026-882\\\" from Apex Logistics (ID 2) for 75000.0 PKR referencing PO-102 was already paid on 2026-08-15.\"\n  ],\n  \"reasoning\": \"Policy POL-05-NO-DUPLICATE strictly prohibits processing invoices that are duplicates of previously paid transactions. The current invoice is a direct duplicate of an invoice that has already been approved and settled for the same supplier, PO, and amount.\",\n  \"next_action\": \"Reject the invoice. Inform Apex Logistics that the invoice is a duplicate of a previously paid transaction and advise against resubmission. Investigate the cause of the duplicate invoice submission.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 7.134,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-003",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\n    \"DISC-INACTIVE-SUPPLIER\"\n  ],\n  \"evidence\": [\n    \"The supplier 'Cascade Materials' (supplier_id: 3) has a 'status' of 'INACTIVE' in the transaction data.\",\n    \"The invoice (invoice_id: 303) is from 'Cascade Materials' (supplier_id: 3).\"\n  ],\n  \"reasoning\": \"Policy POL-01-SUPPLIER-ACTIVE requires that all suppliers must be active for transactions to proceed. The transaction data clearly shows that 'Cascade Materials' is currently marked as 'INACTIVE'. This constitutes a critical discrepancy, triggering a hold as per POL-10-DISCREPANCY-HOLD, and preventing payment authorization.\",\n  \"next_action\": \"Place the invoice on hold. Investigate the 'INACTIVE' status of 'Cascade Materials' and resolve the underlying compliance issues or determine if the invoice needs to be voided or reissued to an authorized, active supplier. Do not process payment until the supplier's status is compliant or an alternative resolution is found.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 6.186,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-004",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\n    \"DISC-MISSING-PO\"\n  ],\n  \"evidence\": [\n    \"Invoice INV-2026-404 from Titan Industrial Technologies cites Purchase Order PO-999 for an amount of 85,000 PKR.\",\n    \"The transaction data indicates that no record of Purchase Order PO-999 exists in the enterprise ERP database (purchase_order field is null).\"\n  ],\n  \"reasoning\": \"Policy POL-03-PO-EXISTENCE mandates that all purchases must be supported by a valid and authorized Purchase Order. The invoice references PO-999, but verification confirms that this PO does not exist in the system, directly violating the policy. This constitutes a critical missing document discrepancy as per POL-10-DISCREPANCY-HOLD.\",\n  \"next_action\": \"Initiate an immediate investigation into the origin of invoice INV-2026-404 and the circumstances leading to a missing Purchase Order. Do not proceed with payment until a valid and authorized Purchase Order is produced, or the purchase is formally approved through an exception process, if applicable.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 6.433,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-005",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": "{\n  \"decision\": \"ESCALATE\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\n    \"DISC-UNAUTH-APPROVAL\"\n  ],\n  \"evidence\": [\n    \"Purchase Order PO-105 total amount is 180,000.0 PKR.\",\n    \"PO-105 was approved by David Patel, a Procurement Officer.\",\n    \"David Patel's authorized approval limit is 50,000.0 PKR.\"\n  ],\n  \"reasoning\": \"The total amount of Purchase Order PO-105 (180,000.0 PKR) significantly exceeds the approval limit of David Patel (50,000.0 PKR), in direct violation of policy POL-07-APPROVAL-LIMIT. This constitutes an unauthorized approval and a high-risk compliance breach.\",\n  \"next_action\": \"Escalate to a higher authority (e.g., Head of Procurement or Finance Director) for review and resolution of the unauthorized approval. Payment is withheld until proper authorization is obtained or an alternative resolution is approved.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 6.757,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-006",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\n    \"DISC-AMOUNT-MISMATCH\"\n  ],\n  \"evidence\": [\n    \"Purchase Order 106 specifies a total amount of 60,000.0 PKR for 50 units at a unit price of 1200.0 PKR.\",\n    \"Goods Receipt Note 206 confirms receipt of 50 units.\",\n    \"Invoice INV-2026-606 states an amount of 72,000.0 PKR for 50 units.\"\n  ],\n  \"reasoning\": \"The invoice amount of 72,000.0 PKR is higher than the approved Purchase Order 106 total amount of 60,000.0 PKR for the identical quantity of 50 units. This directly violates policy POL-06-AMOUNT-CALC regarding correct amount calculation and necessitates a hold on payment as per POL-10-DISCREPANCY-HOLD.\",\n  \"next_action\": \"Contact Pinnacle Supplies to resolve the amount discrepancy and request a revised invoice that matches the Purchase Order 106 total amount of 60,000.0 PKR.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 9.889,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-007",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.889,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 15.319466135s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}"
+  },
+  {
+    "case_id": "PROC-008",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.901,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 13.426923544s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '13s'}]}}"
+  },
+  {
+    "case_id": "PROC-009",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 2.495,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 10.829473158s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '10s'}]}}"
+  },
+  {
+    "case_id": "PROC-010",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.842,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 9.009601321s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '9s'}]}}"
+  },
+  {
+    "case_id": "PROC-001",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\n    \"DISC-QTY-MISMATCH\"\n  ],\n  \"evidence\": [\n    \"Quantity mismatch between approved purchase order and goods receipt note\",\n    \"Supplier attempted to submit invoice for full amount despite goods receipt note only accepting 80 units\"\n  ],\n  \"reasoning\": \"The purchase order and goods receipt note clearly indicate a quantity mismatch. The supplier's attempt to submit an invoice for the full amount despite the goods receipt note only accepting 80 units demonstrates a lack of attention to detail and a failure to accurately reflect the quantity received. This policy is in place to prevent suppliers from submitting fraudulent invoices.\",\n  \"next_action\": \"Monitor supplier for future compliance and re-verify quantity reconciliation\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 29.229,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-002",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\"DISC-DUP-INVOICE\"],\n  \"evidence\": [\" supplier's duplicate invoice and inspection of accounting records reveals an identical invoice from the same supplier was already approved and settled on 2026-08-15\"],\n  \"reasoning\": \"Duplicate invoices are a significant risk, as they can lead to overpayment and potential fraud. The supplier's duplicate invoice and inspection of accounting records suggest that the invoice was approved and settled prematurely, raising concerns about the accuracy of the records.\",\n  \"next_action\": \"Verify supplier's invoice approval process and implement additional controls to prevent similar incidents in the future\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 38.912,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-003",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"LOW\",\n  \"discrepancies\": [\n    \"DISC-QTY-MISMATCH\"\n  ],\n  \"evidence\": [\n    \"The supplier's status as INACTIVE following a compliance audit suspension, as indicated by the vendor master profile.\",\n    \"The transaction data for invoice PROC-003 does not contain any discrepancies in the 'items' section.\"\n  ],\n  \"reasoning\": \"Based on the provided facts and applicable policies, the supplier's status as INACTIVE does not warrant any further action, as it is a known risk. However, the lack of discrepancies in the transaction data for invoice PROC-003 necessitates a HOLD to ensure compliance with the applicable policies.\",\n  \"next_action\": \"Hold the PO until further evaluation.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 35.654,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-004",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"LOW\",\n  \"discrepancies\": [\"DISC-QTY-MISMATCH\", \"DISC-INACTIVE-SUPPLIER\", \"DISC-UNAUTH-APPROVAL\"],\n  \"evidence\": [\"The transaction data includes no evidence of PO-999 ever being created or authorized\"],\n  \"reasoning\": \"The procurement policy POL-10-DISCREPANCY-HOLD states that a purchase order must exist before issuing an invoice. This transaction fails to meet this requirement, indicating a discrepancy.\",\n  \"next_action\": \"Verify the status of PO-999 and ensure it is properly authorized before issuing an invoice.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 24.713,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-005",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\"DISC-QTY-MISMATCH\"],\n  \"evidence\": [\"Supplier's approved limit is capped at 50,000 PKR, PO-105 totals 180,000 PKR, and PO-105 is not within approved limits\"],\n  \"reasoning\": \"The supplier's approved limit is capped at 50,000 PKR, and the PO-105 totals 180,000 PKR, indicating that the purchase exceeds the approved limit. Also, the goods receipt and invoice information suggests that the order is not within approved limits.\",\n  \"next_action\": \"Send a follow-up letter to the supplier to discuss possible approval within the approved limits and to ensure the supplier understands the importance of adhering to procurement policies.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 30.95,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-006",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"REJECT\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-MISSING-PO\", \"DISC-INACTIVE-SUPPLIER\"],\n  \"evidence\": [\"Warehouse confirmed receipt of 50 units, but PO was approved for 60,000 PKR; Supplier's invoice claims 72,000 PKR (effectively 1,440 PKR/unit) exceeding the contracted amount; PO's line total is 60000.0, PO's approved by employee has an approval limit of 80000.0; Invoice's amount is 72000.0, but PO was approved for 60000.0.\", \"Pinnacle Supplies is an inactive supplier according to the applicable policies.\"],\n  \"reasoning\": \"Concise policy-grounded justification for your determination. The warehouse confirmation of receipt of 50 units without the PO's approval for the total amount, the supplier's invoice exceeding the contracted amount, and the supplier's status as inactive are all indicators of non-compliance. The payment amount also exceeds the approved amount, reinforcing the need for escalation and further investigation.\",\n  \"next_action\": \"Escalate to Procurement/Finance team and obtain final approval before payment.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 38.986,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-007",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\"DISC-QTY-MISMATCH\", \"DISC-DUP-INVOICE\"],\n  \"evidence\": [\n    \"The partial shipment of 120 units leaves 80 units unfulfilled, which is a quantity discrepancy.\",\n    \"The supplier invoiced for the entire order quantity of 200 units at 60,000 PKR, but only received 120 units for partial shipment.\",\n    \"The discrepancy is not solely due to missing PO, but also due to duplicate invoices and bank/mismatch errors.\"\n  ],\n  \"reasoning\": \"The discrepancy in quantity mismatch is a policy-violating error, as the supplier is obligated to provide full quantities for approved orders. The partial receipt and mismatch in bank information are considered unacceptable, requiring escalation.\",\n  \"next_action\": \"The supplier must correct the discrepancy by completing the remaining 80 units of PRD-707, and rectify the bank mismatch and duplicate invoice errors.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 36.558,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-008",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\"DISC-QTY-MISMATCH\"],\n  \"evidence\": [\"Factual observations directly extracted from transaction data\", \"The discrepancy is due to a bank account mismatch, which is a known policy violation.\"],\n  \"reasoning\": \"This transaction demonstrates a lack of bank account matching, which is a high-risk behavior that violates policy POL-08-BANK-MATCH.\",\n  \"next_action\": \"Verify bank account matching for all suppliers.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 32.154,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-009",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"LOW\",\n  \"discrepancies\": [\"DISC-CURRENCY-MISMATCH\"],\n  \"evidence\": [\"Factual observations directly extracted from transaction data\"],\n  \"reasoning\": \"The currency mismatch policy requires that all foreign exchange transactions be authorized and documented. The transaction data shows that the invoice was billed in USD without foreign exchange authorization or currency amendment. This discrepancy warrants a hold, as it violates the applicable policy.\",\n  \"next_action\": \"Authorize the purchase order and ensure that the invoice is properly documented and authorized before issuing a payment.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 36.732,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-010",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"REJECT\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-QTY-MISMATCH\", \"DISC-DUP-INVOICE\", \"DISC-INACTIVE-SUPPLIER\", \"DISC-MISSING-PO\", \"DISC-UNAUTH-APPROVAL\", \"DISC-AMOUNT-MISMATCH\", \"DISC-PARTIAL-RECEIPT\", \"DISC-BANK-MISMATCH\", \"DISC-CURRENCY-MISMATCH\"],\n  \"evidence\": [\"Factual observations directly extracted from transaction data\"],\n  \"reasoning\": \"Multiple discrepancies were identified in the transaction data, including a discrepancy in the quantity of goods received (100 units instead of 150), an inactive supplier (Beacon Technologies), an invoice for 150 units with an inflated total amount, and an inactive supplier with an approval limit that exceeded the amount of goods received. These discrepancies warrant a rejection of the procurement and payment of the invoice.\",\n  \"next_action\": \"Procurement/Finance team should initiate a hold on the procurement until further review and resolution of these discrepancies and confirm with the supplier that they are indeed inactive.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 38.523,
+    "success": true,
+    "error": null
+  }
+]

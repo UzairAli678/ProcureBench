@@ -5,6 +5,7 @@ Provides unified, decoupled client integrations for Gemini and Ollama.
 
 import json
 import os
+import re
 import time
 from typing import Any, Optional
 import urllib.error
@@ -97,9 +98,13 @@ def generate_gemini_response(
     prompt: str,
     model: Optional[str] = None,
     api_key: Optional[str] = None,
+    max_retries: int = 3,
+    initial_backoff: float = 2.0,
+    backoff_factor: float = 2.0,
 ) -> dict[str, Any]:
     """
     Generates a response from Gemini using google-genai.
+    Includes limited retry with exponential backoff on HTTP 429 and 503 errors.
     Returns raw text and metadata without scoring.
     """
     start_time = time.perf_counter()
@@ -117,56 +122,70 @@ def generate_gemini_response(
             "error": "Missing GEMINI_API_KEY. Set it in your environment or .env file.",
         }
 
-    try:
-        from google import genai
-        from google.genai import types
+    for attempt in range(max_retries + 1):
+        try:
+            from google import genai
+            from google.genai import types
 
-        client = genai.Client(api_key=resolved_key)
-        config = types.GenerateContentConfig(
-            response_mime_type="application/json",
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
-        )
-        response = client.models.generate_content(
-            model=resolved_model,
-            contents=prompt,
-            config=config,
-        )
+            client = genai.Client(api_key=resolved_key)
+            config = types.GenerateContentConfig(
+                response_mime_type="application/json",
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            )
+            response = client.models.generate_content(
+                model=resolved_model,
+                contents=prompt,
+                config=config,
+            )
 
-        latency = round(time.perf_counter() - start_time, 3)
-        raw_text = response.text if response and response.text else None
+            latency = round(time.perf_counter() - start_time, 3)
+            raw_text = response.text if response and response.text else None
 
-        if not raw_text or not raw_text.strip():
+            if not raw_text or not raw_text.strip():
+                return {
+                    "provider": "gemini",
+                    "model": resolved_model,
+                    "raw_text": None,
+                    "latency_seconds": latency,
+                    "success": False,
+                    "error": "Received empty response from Gemini API.",
+                }
+
+            return {
+                "provider": "gemini",
+                "model": resolved_model,
+                "raw_text": raw_text.strip(),
+                "latency_seconds": latency,
+                "success": True,
+                "error": None,
+            }
+        except Exception as e:
+            err_str = str(e)
+            is_rate_limit = "429" in err_str or "RESOURCE_EXHAUSTED" in err_str
+            is_unavailable = "503" in err_str or "UNAVAILABLE" in err_str
+
+            # Check if this error is retryable and retries are remaining
+            if (is_rate_limit or is_unavailable) and attempt < max_retries:
+                delay = initial_backoff * (backoff_factor ** attempt)
+                match = re.search(r"retryDelay':\s*'(\d+)", err_str)
+                if match:
+                    delay = max(delay, float(match.group(1)) + 1.0)
+                time.sleep(delay)
+                continue
+
+            latency = round(time.perf_counter() - start_time, 3)
+            # Sanitize error message to prevent accidental key exposure
+            safe_error = err_str
+            if resolved_key and resolved_key in safe_error:
+                safe_error = safe_error.replace(resolved_key, "[REDACTED_KEY]")
             return {
                 "provider": "gemini",
                 "model": resolved_model,
                 "raw_text": None,
                 "latency_seconds": latency,
                 "success": False,
-                "error": "Received empty response from Gemini API.",
+                "error": f"Gemini API error: {safe_error}",
             }
-
-        return {
-            "provider": "gemini",
-            "model": resolved_model,
-            "raw_text": raw_text.strip(),
-            "latency_seconds": latency,
-            "success": True,
-            "error": None,
-        }
-    except Exception as e:
-        latency = round(time.perf_counter() - start_time, 3)
-        # Sanitize error message to prevent accidental key exposure
-        safe_error = str(e)
-        if resolved_key and resolved_key in safe_error:
-            safe_error = safe_error.replace(resolved_key, "[REDACTED_KEY]")
-        return {
-            "provider": "gemini",
-            "model": resolved_model,
-            "raw_text": None,
-            "latency_seconds": latency,
-            "success": False,
-            "error": f"Gemini API error: {safe_error}",
-        }
 
 
 def generate_ollama_response(

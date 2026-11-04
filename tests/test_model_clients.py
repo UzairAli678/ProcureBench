@@ -218,6 +218,88 @@ class TestModelClients(unittest.TestCase):
         self.assertNotIn(secret_key, result["error"])
         self.assertIn("[REDACTED_KEY]", result["error"])
 
+    @patch("time.sleep")
+    @patch("google.genai.Client")
+    def test_gemini_retry_on_429_rate_limit(self, mock_client_cls, mock_sleep):
+        """Gemini client must retry on HTTP 429 rate limit errors and succeed if subsequent attempt passes."""
+        mock_client = MagicMock()
+        mock_client_cls.return_value = mock_client
+
+        mock_success_resp = MagicMock()
+        mock_success_resp.text = '{"decision": "HOLD"}'
+
+        # First call raises 429, second call succeeds
+        mock_client.models.generate_content.side_effect = [
+            Exception("429 RESOURCE_EXHAUSTED: rate limit exceeded, 'retryDelay': '2s'"),
+            mock_success_resp,
+        ]
+
+        result = generate_gemini_response(
+            prompt="Evaluate transaction",
+            api_key="mock_test_key",
+            max_retries=2,
+            initial_backoff=0.1,
+        )
+
+        self.assertTrue(result["success"])
+        self.assertEqual(result["raw_text"], '{"decision": "HOLD"}')
+        self.assertEqual(mock_client.models.generate_content.call_count, 2)
+        self.assertTrue(mock_sleep.called)
+
+    @patch("time.sleep")
+    @patch("google.genai.Client")
+    def test_gemini_retry_on_503_unavailable(self, mock_client_cls, mock_sleep):
+        """Gemini client must retry on 503 temporary unavailable errors and succeed."""
+        mock_client = MagicMock()
+        mock_client_cls.return_value = mock_client
+
+        mock_success_resp = MagicMock()
+        mock_success_resp.text = '{"decision": "HOLD"}'
+
+        # First call raises 503, second call succeeds
+        mock_client.models.generate_content.side_effect = [
+            Exception("503 UNAVAILABLE: Model is currently experiencing high demand."),
+            mock_success_resp,
+        ]
+
+        result = generate_gemini_response(
+            prompt="Evaluate transaction",
+            api_key="mock_test_key",
+            max_retries=2,
+            initial_backoff=0.1,
+        )
+
+        self.assertTrue(result["success"])
+        self.assertEqual(result["raw_text"], '{"decision": "HOLD"}')
+        self.assertEqual(mock_client.models.generate_content.call_count, 2)
+        self.assertTrue(mock_sleep.called)
+
+    @patch("time.sleep")
+    @patch("google.genai.Client")
+    def test_gemini_max_retries_exhaustion(self, mock_client_cls, mock_sleep):
+        """Gemini client must never retry indefinitely; after max_retries it must return failure."""
+        mock_client = MagicMock()
+        mock_client_cls.return_value = mock_client
+
+        # Always raise 429
+        mock_client.models.generate_content.side_effect = Exception(
+            "429 RESOURCE_EXHAUSTED: Rate limit permanently exceeded"
+        )
+
+        result = generate_gemini_response(
+            prompt="Evaluate transaction",
+            api_key="mock_test_key",
+            max_retries=3,
+            initial_backoff=0.01,
+        )
+
+        self.assertFalse(result["success"])
+        self.assertIsNone(result["raw_text"])
+        self.assertIn("429", result["error"])
+        # Initial attempt + 3 retries = 4 total attempts
+        self.assertEqual(mock_client.models.generate_content.call_count, 4)
+        self.assertEqual(mock_sleep.call_count, 3)
+
 
 if __name__ == "__main__":
     unittest.main()

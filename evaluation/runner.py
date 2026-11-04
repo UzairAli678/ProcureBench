@@ -7,6 +7,7 @@ from datetime import datetime
 import json
 import os
 from pathlib import Path
+import time
 from typing import Any, Optional
 
 from evaluation.scoring import score_response
@@ -148,10 +149,12 @@ def run_benchmark(
     ollama_model: Optional[str] = None,
     gemini_api_key: Optional[str] = None,
     ollama_base_url: Optional[str] = None,
+    gemini_delay_seconds: float = 12.0,
 ) -> dict[str, Any]:
     """
     Executes the benchmark evaluation across all test cases and providers.
     Saves raw_results.json, scores.json, and summary.json under results/runs/run_<timestamp>/.
+    Includes configurable request pacing for Gemini to avoid rate limits.
     """
     resolved_dataset_path = dataset_path or DEFAULT_DATASET_PATH
     resolved_output_dir = output_dir or DEFAULT_OUTPUT_DIR
@@ -188,12 +191,18 @@ def run_benchmark(
         if not generator:
             continue
 
-        for case in test_cases:
+        for i, case in enumerate(test_cases):
             case_id = case["case_id"]
+
+            # Configurable pacing delay between Gemini requests to avoid free-tier rate limits
+            if provider == "gemini" and i > 0 and gemini_delay_seconds > 0:
+                print(f"[{provider.upper()}] Rate-limit pacing: waiting {gemini_delay_seconds:.0f}s before next request...", flush=True)
+                time.sleep(gemini_delay_seconds)
 
             # CRITICAL FAIRNESS RULE:
             # build_benchmark_prompt strictly excludes expected_answer
             prompt = build_benchmark_prompt(case)
+            print(f"[{provider.upper()}] Case {i+1}/{len(test_cases)}: {case_id} ({case['title']})...", end=" ", flush=True)
 
             # Generate response (catches errors internally and returns structured result)
             try:
@@ -207,6 +216,11 @@ def run_benchmark(
                     "success": False,
                     "error": f"Unhandled client error: {str(e)}",
                 }
+
+            if gen_result["success"]:
+                print(f"Done in {gen_result['latency_seconds']}s", flush=True)
+            else:
+                print(f"Error: {gen_result['error']}", flush=True)
 
             # Record raw result
             raw_record = {

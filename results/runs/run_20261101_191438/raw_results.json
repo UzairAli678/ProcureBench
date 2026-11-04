@@ -1,0 +1,182 @@
+[
+  {
+    "case_id": "PROC-001",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\n    \"DISC-QTY-MISMATCH\",\n    \"DISC-PARTIAL-RECEIPT\"\n  ],\n  \"evidence\": [\n    \"Purchase Order #101 specifies an order quantity of 100 units for Product PRD-101.\",\n    \"Goods Receipt Note #201 confirms only 80 units of Product PRD-101 were received.\",\n    \"Invoice #301 requests payment for 100 units of Product PRD-101.\"\n  ],\n  \"reasoning\": \"Policy POL-02-QTY-MATCH dictates that the invoiced quantity must match the quantity of goods received. The transaction data shows a discrepancy where the invoice requests payment for 100 units, but the goods receipt confirms only 80 units were delivered and accepted. This violates the quantity matching policy, leading to a partial receipt discrepancy that requires further action as per POL-10-DISCREPANCY-HOLD.\",\n  \"next_action\": \"Place the invoice on hold. Contact Horizon Components to rectify the quantity discrepancy by either adjusting the invoice to 80 units or providing documentation for the remaining 20 units not yet received.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 10.677,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-002",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.687,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 8.942507441s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '8s'}]}}"
+  },
+  {
+    "case_id": "PROC-003",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 2.519,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 6.469150584s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '6s'}]}}"
+  },
+  {
+    "case_id": "PROC-004",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 2.562,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 3.910131338s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '3s'}]}}"
+  },
+  {
+    "case_id": "PROC-005",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.885,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 1.945344217s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '1s'}]}}"
+  },
+  {
+    "case_id": "PROC-006",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.957,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 59.999021591s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '59s'}]}}"
+  },
+  {
+    "case_id": "PROC-007",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.97,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 58.03534972s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '58s'}]}}"
+  },
+  {
+    "case_id": "PROC-008",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.952,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 56.06791733s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '56s'}]}}"
+  },
+  {
+    "case_id": "PROC-009",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 1.85,
+    "success": false,
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 54.241617766s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '54s'}]}}"
+  },
+  {
+    "case_id": "PROC-010",
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "raw_response": null,
+    "latency_seconds": 2.053,
+    "success": false,
+    "error": "Gemini API error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "case_id": "PROC-001",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"REJECT\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-MISSING-PO\"],\n  \"evidence\": [\n    \"Supplier Horizon Components submitted an invoice for goods received that did not match the approved purchase order.\",\n    \"Goods receipt note confirms only 80 units were accepted into the warehouse, not 100 units as approved.\",\n    \"Supplier bank account does not match the approved purchase order, leading to potential payment discrepancies.\"\n  ],\n  \"reasoning\": \"The discrepancy in the quantity mismatch policy (POL-02-QTY-MATCH) and the absence of a valid PO number in the supplier's approved purchase order (POL-10-DISCREPANCY-HOLD) indicate a lack of compliance. Furthermore, the supplier's payment request for the full 100 units is a clear indication of payment authorization without a valid PO number, which is a high-risk scenario.\",\n  \"next_action\": \"Procurement/Finance personnel should escalate the case to obtain a revised PO number and ensure the correct PO number is included in future transactions.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 29.075,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-002",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"ESCALEATE\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\n    \"DISC-QTY-MISMATCH\"\n  ],\n  \"evidence\": [\n    \"Factual observations directly extracted from transaction data\"\n  ],\n  \"reasoning\": \"The procurement team identified a risk of quantity mismatch between the approved purchase order and the historical invoice. While the supplier was approved and settled on 2026-08-15, there is a discrepancy with the quantity of goods received on 2026-08-05, which is 50 units instead of 50 units. The supplier's bank account is also inactive, which may indicate a lack of financial control. As a result, the procurement team will escalate the matter to the procurement director for further review.\",\n  \"next_action\": \"Approve the purchase order with a revised quantity of 50 units and authorize the financial team to investigate the supplier's financial status.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 37.029,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-003",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"LOW\",\n  \"discrepancies\": [\"DISC-QTY-MISMATCH\"],\n  \"evidence\": [\"Factual observations directly extracted from transaction data\"],\n  \"reasoning\": \"The supplier status is explicitly stated as 'INACTIVE' in the vendor master profile, indicating a lack of active status. This discrepancy is based on the provided transaction data, where the PO was approved with an approved amount of 120,000 PKR, matching the inactive status of the supplier.\",\n  \"next_action\": \"Conduct regular reviews of supplier inactive status to ensure compliance.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 30.369,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-004",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\"DISC-MISSING-PO\"],\n  \"evidence\": [\n    \"Factual observation: Verify if PO-999 exists in the enterprise ERP database before generating the invoice.\"\n  ],\n  \"reasoning\": \"The transaction data indicates that Titan Industrial Technologies submitted an invoice without a valid purchase order. This discrepancy requires a hold until the PO is verified and the invoice is validated.\",\n  \"next_action\": \"Verify PO-999's existence in the enterprise ERP database and generate a valid PO before issuing the invoice.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 24.536,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-005",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"REJECT\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-INACTIVE-SUPPLIER\"],\n  \"evidence\": [\"The Procurement Officer, David Patel, is not authorized to approve purchases exceeding his approved limit of 50,000 PKR.\"],\n  \"reasoning\": \"The Procurement Officer's approval limit for purchase PO-105 is strictly capped at 50,000 PKR, exceeding the 180,000 PKR approved by the approval limit for the goods receipt. This indicates a potential risk to compliance and financial integrity.\",\n  \"next_action\": \"escalate to Procurement Management for additional approval and review.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 32.192,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-006",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"REJECT\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-MISSING-PO\", \"DISC-PARTIAL-RECEIPT\"],\n  \"evidence\": [\"The vendor invoice claims 72,000 PKR (effectively 1,440 PKR/unit), exceeding the contracted amount. The warehouse confirmed receipt of 50 units.\", \"The transaction does not accurately reflect the agreed PO unit price and total amount.\"],\n  \"reasoning\": \"The discrepancies in the invoice and goods receipt do not accurately reflect the contracted amount and vendor invoice, indicating a possible price mismatch and potential for payment unauthorized.\",\n  \"next_action\": \"Escalate to procurement/finance team for further review and escalation of the issue.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 40.37,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-007",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"HOLD\",\n  \"risk_level\": \"MEDIUM\",\n  \"discrepancies\": [\"DISC-MISSING-PO\"],\n  \"evidence\": [\"Warehouse receipt GRN-207 logged a partial shipment of 120 units, leaving 80 units unfulfilled.\", \"The supplier invoiced for the entire order quantity of 200 units at 60,000 PKR.\", \"Total amount of 60000 PKR is different from the total amount of 60000 PKR.\", \"Approved by employee ID 13, but approval limit is 75000 PKR.\", \"No PO number for GRN-207.\"],\n  \"reasoning\": \"The discrepancy in the warehouse receipt GRN-207 and the supplier invoice is concerning the missing PO number, which may indicate a lack of proper documentation or a mismatch in the receipt process.\",\n  \"next_action\": \"Verify PO number for GRN-207 and investigate the discrepancy with the supplier.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 39.292,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-008",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"ESCALEATE\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-BANK-MISMATCH\"],\n  \"evidence\": [\n    \"The bank account listed on the invoice (PK98HABB0000009988776602) differs from the verified bank account recorded in the supplier master profile (PK36SCBL0000001123456701).\",\n    \"The PO-108 does not have a matching GRN (Goods Received Note) with the invoice (INV-2026-808).\",\n  \"reasoning\u201d: \u201cThe bank mismatch and PO-108 GRN mismatch indicate a high risk of fraud. As such, the decision is escalated to a higher level of scrutiny and requires immediate attention from procurement/finance personnel to resolve the discrepancies and prevent potential financial losses.\",\n  \"next_action\u201d: \u201cProcurement/Finance personnel must verify the bank account and GRN details, update the supplier master profile, and correct the PO-108 details to ensure accuracy and compliance with applicable policies and regulations. The PO-108 must be approved and paid before the invoice can be released for payment.\",\n  \"payment_allowed\u201d: false\u2013}assistant\"\n\n       \t    ]}",
+    "latency_seconds": 36.195,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-009",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"APPROVE\",\n  \"risk_level\": \"LOW\",\n  \"discrepancies\": [\"DISC-CURRENCY-MISMATCH\"],\n  \"evidence\": [\"Factual observations directly extracted from transaction data: The invoice was billed in USD without foreign exchange authorization or currency amendment.\"],\n  \"reasoning\": \"The currency mismatch in the invoice does not meet the requirements of the applicable policy POL-09-CURRENCY-MATCH, which mandates currency matching in all transactions. Given that no additional information is present to justify a different level of risk, this discrepancy is considered low-risk and can be addressed by the issuing party.\",\n  \"next_action\": \"The supplier must ensure that future invoices are properly authorized and exchange-rate matched.\",\n  \"payment_allowed\": true\n}",
+    "latency_seconds": 29.211,
+    "success": true,
+    "error": null
+  },
+  {
+    "case_id": "PROC-010",
+    "provider": "ollama",
+    "model": "llama3.2:1b",
+    "raw_response": "{\n  \"decision\": \"ESCALATE\",\n  \"risk_level\": \"HIGH\",\n  \"discrepancies\": [\"DISC-MISSING-PO\", \"DISC-UNAUTH-APPROVAL\", \"DISC-INACTIVE-SUPPLIER\", \"DISC-AMOUNT-MISMATCH\", \"DISC-PARTIAL-RECEIPT\", \"DISC-BANK-MISMATCH\", \"DISC-CURRENCY-MISMATCH\"],\n  \"evidence\": [\"Factual observations directly extracted from transaction data\"],\n  \"reasoning\": \"Given the multiple discrepancies identified, including the missing PO, unauthored approval, and mismatched amounts, the procurement team must escalate the case to ensure accurate and compliant procurement practices.\",\n  \"next_action\": \"Procurement/Finance team must investigate and resolve the discrepancies, including reconciling the partial receipt, verifying the missing PO, and adjusting the payment to ensure compliance with applicable policies.\",\n  \"payment_allowed\": false\n}",
+    "latency_seconds": 42.833,
+    "success": true,
+    "error": null
+  }
+]

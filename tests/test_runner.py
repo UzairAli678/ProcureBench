@@ -25,6 +25,13 @@ class TestBenchmarkRunner(unittest.TestCase):
         with open(cls.dataset_path, "r", encoding="utf-8") as f:
             cls.test_cases = json.load(f)
 
+    def setUp(self):
+        self.sleep_patcher = patch("evaluation.runner.time.sleep")
+        self.mock_sleep = self.sleep_patcher.start()
+
+    def tearDown(self):
+        self.sleep_patcher.stop()
+
     def test_loading_all_10_cases(self):
         """Must load exactly 10 benchmark test cases from test_cases.json."""
         cases = load_test_cases(self.dataset_path)
@@ -273,6 +280,54 @@ class TestBenchmarkRunner(unittest.TestCase):
             self.assertGreater(g_sum["false_approval_count"], 0)
             self.assertGreaterEqual(g_sum["average_latency_seconds"], 1.0)
             self.assertIn("average_f1", g_sum["discrepancy_detection_performance"])
+
+    @patch("evaluation.runner.generate_gemini_response")
+    def test_gemini_request_pacing_delay(self, mock_gemini):
+        """Runner must apply configurable pacing delay (12s default) between Gemini requests."""
+        mock_gemini.return_value = {
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "raw_text": json.dumps(self.test_cases[0]["expected_answer"]),
+            "latency_seconds": 0.5,
+            "success": True,
+            "error": None,
+        }
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            run_benchmark(
+                dataset_path=self.dataset_path,
+                output_dir=Path(temp_dir),
+                providers=["gemini"],
+                gemini_delay_seconds=12.0,
+            )
+
+            # Exactly 9 delays between 10 requests
+            pacing_calls = [call for call in self.mock_sleep.call_args_list if call[0] == (12.0,)]
+            self.assertEqual(len(pacing_calls), 9)
+
+    @patch("evaluation.runner.generate_ollama_response")
+    def test_ollama_not_delayed_by_pacing(self, mock_ollama):
+        """Pacing delay must NOT be applied to Ollama requests."""
+        mock_ollama.return_value = {
+            "provider": "ollama",
+            "model": "llama3.2:1b",
+            "raw_text": json.dumps(self.test_cases[0]["expected_answer"]),
+            "latency_seconds": 0.5,
+            "success": True,
+            "error": None,
+        }
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            run_benchmark(
+                dataset_path=self.dataset_path,
+                output_dir=Path(temp_dir),
+                providers=["ollama"],
+                gemini_delay_seconds=12.0,
+            )
+
+            # mock_sleep must never be called for Ollama
+            pacing_calls = [call for call in self.mock_sleep.call_args_list if call[0] == (12.0,)]
+            self.assertEqual(len(pacing_calls), 0)
 
 
 if __name__ == "__main__":
